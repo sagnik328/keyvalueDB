@@ -11,6 +11,7 @@ type Storer[K comparable, V any] interface {
 	Get(K) ([]byte, error)
 	Update(K, V) error
 	Delete(K) (V, error)
+	HasKey(K) bool
 }
 
 type KVStore[K comparable, V any] struct {
@@ -34,6 +35,19 @@ func (s *KVStore[K, V]) Put(key K, value V) error {
 	s.data[key] = value
 
 	return nil
+}
+
+func (s *KVStore[K, V]) Update(key K, value V) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	s.data[key] = value
+	return nil
+
+}
+func (s *KVStore[K, V]) HasKey(key K) bool {
+	_, ok := s.data[key]
+	return ok
 }
 
 func (s *KVStore[K, V]) Get(key K) (V, error) {
