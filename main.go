@@ -41,10 +41,16 @@ func (s *KVStore[K, V]) Update(key K, value V) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	s.data[key] = value
+	if s.HasKey(key) == true {
+		fmt.Printf("The key {%v} was present with value {%v}\n", key, s.data[key])
+		s.data[key] = value
+		fmt.Printf("Updated kv")
+	}
 	return nil
 
 }
+
+// not concurrent and safe ! should be used with lock
 func (s *KVStore[K, V]) HasKey(key K) bool {
 	_, ok := s.data[key]
 	return ok
