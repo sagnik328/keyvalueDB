@@ -8,7 +8,7 @@ import (
 
 type Storer[K comparable, V any] interface {
 	Put(K, V) error
-	Get(K) (V, error)
+	Get(K) ([]byte, error)
 	Update(K, V) error
 	Delete(K) (V, error)
 }
@@ -36,20 +36,19 @@ func (s *KVStore[K, V]) Put(key K, value V) error {
 	return nil
 }
 
-func (s *KVStore[K, V]) Get(key K, value V) (V, error) {
+func (s *KVStore[K, V]) Get(key K) (V, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	data, err := s.data[key]
+	value, err := s.data[key]
 	if err {
 		return value, fmt.Errorf("The key {%v} does not exists\n", key)
 	}
-	fmt.Printf("The key {%v} was found\n", data)
 	return value, nil
 }
 
 func StoreThings(s Storer[string, int]) error {
-	return s.Put("foo", 2)
+	return s.Put("foo", 1)
 }
 
 //type Block struct{}
@@ -63,4 +62,10 @@ func main() {
 	if err := store.Put("foo", "bar"); err != nil {
 		log.Fatal(err)
 	}
+
+	value, err := store.Get("foo")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(value)
 }
