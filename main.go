@@ -14,8 +14,8 @@ type KVStore[K comparable, V any] struct {
 	data map[K]V
 }
 
-func StoreThings(s Storer) error {
-	return s.Put("foo", []byte("Br"))
+func StoreThings(s Storer[string, int]) error {
+	return s.Put("foo", 2)
 }
 
 func NewKVStore() *KVStore[string, int] {
