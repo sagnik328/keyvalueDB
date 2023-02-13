@@ -14,14 +14,26 @@ type KVStore[K comparable, V any] struct {
 	data map[K]V
 }
 
-func StoreThings(s Storer[string, int]) error {
-	return s.Put("foo", 2)
-}
-
 func NewKVStore[K comparable, V any]() *KVStore[K, V] {
+	//constructor for the KV Store
 	return &KVStore[K, V]{
 		data: make(map[K]V),
 	}
+}
+
+func (s *KVStore[K, V]) Put(key K, value V) error {
+	//implementation of the KVStorage
+	//open a lock for reading and open a lock for writing.
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	s.data[key] = value
+
+	return nil
+}
+
+func StoreThings(s Storer[string, int]) error {
+	return s.Put("foo", 2)
 }
 
 type Block struct{}
