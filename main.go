@@ -2,27 +2,28 @@ package main
 
 import "sync"
 
-type Storer interface {
-	Put(string, []byte) error
-	Get(string) ([]byte, error)
-	Update(string, []byte) error
-	Delete(string) (byte, error)
+type Storer[K comparable, V any] interface {
+	Put(K, V) error
+	Get(K) (V, error)
+	Update(K, V) error
+	Delete(K) (V, error)
 }
 
-type KVStore struct {
-	mu sync.Mutex
+type KVStore[K comparable, V any] struct {
+	mu   sync.Mutex
+	data map[K]V
 }
 
-type StoreThings(s Storer) error {
-	return s.Put("foo",[]byte("Br"))
+func StoreThings(s Storer) error {
+	return s.Put("foo", []byte("Br"))
 }
 
-func NewKVStore() *KVStore {
-	return &KVStore{
-		data: make(map[string][]byte)
+func NewKVStore() *KVStore[string, int] {
+	return &KVStore[string, int]{
+		data: make(map[string]int),
 	}
 }
 
-func main(){
+func main() {
 
 }
