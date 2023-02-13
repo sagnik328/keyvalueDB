@@ -1,6 +1,9 @@
 package main
 
-import "sync"
+import (
+	"log"
+	"sync"
+)
 
 type Storer[K comparable, V any] interface {
 	Put(K, V) error
@@ -36,10 +39,15 @@ func StoreThings(s Storer[string, int]) error {
 	return s.Put("foo", 2)
 }
 
-type Block struct{}
-type Transaction struct{}
+//type Block struct{}
+//type Transaction struct{}
 
 func main() {
-	_ = NewKVStore[string, *Block]()
-	_ = NewKVStore[string, *Transaction]()
+	//	_ = NewKVStore[string, *Block]()
+	//	_ = NewKVStore[string, *Transaction]()
+
+	store := NewKVStore[string, string]()
+	if err := store.Put("foo", "bar"); err != nil {
+		log.Fatal(err)
+	}
 }
