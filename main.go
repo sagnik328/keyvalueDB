@@ -47,7 +47,6 @@ func (s *KVStore[K, V]) Update(key K, value V) error {
 		fmt.Printf("Updated kv")
 	}
 	return nil
-
 }
 
 // not concurrent and safe ! should be used with lock
@@ -84,6 +83,14 @@ func main() {
 	}
 
 	value, err := store.Get("foo")
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := store.Put("foo", "oof"); err != nil {
+		log.Fatal(err)
+	}
+
+	value, err = store.Get("foo")
 	if err != nil {
 		log.Fatal(err)
 	}
