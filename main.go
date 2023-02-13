@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"sync"
 )
@@ -33,6 +34,18 @@ func (s *KVStore[K, V]) Put(key K, value V) error {
 	s.data[key] = value
 
 	return nil
+}
+
+func (s *KVStore[K, V]) Get(key K, value V) (V, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	data, err := s.data[key]
+	if err {
+		return value, fmt.Errorf("The key {%v} does not exists\n", key)
+	}
+	fmt.Printf("The key {%v} was found\n", data)
+	return value, nil
 }
 
 func StoreThings(s Storer[string, int]) error {
