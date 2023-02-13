@@ -18,12 +18,16 @@ func StoreThings(s Storer[string, int]) error {
 	return s.Put("foo", 2)
 }
 
-func NewKVStore() *KVStore[string, int] {
-	return &KVStore[string, int]{
-		data: make(map[string]int),
+func NewKVStore[K comparable, V any]() *KVStore[K, V] {
+	return &KVStore[K, V]{
+		data: make(map[K]V),
 	}
 }
 
-func main() {
+type Block struct{}
+type Transaction struct{}
 
+func main() {
+	_ = NewKVStore[string, *Block]()
+	_ = NewKVStore[string, *Transaction]()
 }
